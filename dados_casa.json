@@ -1,0 +1,29 @@
+{
+    "sala": [
+        {
+            "objeto": "sofa",
+            "tipo": "movel",
+            "quantidade": "1"
+        }
+    ],
+    "quarto": [
+        {
+            "objeto": "cama",
+            "tipo": "movel",
+            "quantidade": "1"
+        },
+        {
+            "objeto": "armario",
+            "tipo": "movel",
+            "quantidade": "1"
+        }
+    ],
+    "cozinha": [
+        {
+            "objeto": "picanha",
+            "tipo": "comida",
+            "quantidade": "3"
+        }
+    ],
+    "sala de estar": []
+}
