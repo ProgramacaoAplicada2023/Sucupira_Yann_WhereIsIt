@@ -92,14 +92,24 @@ class InterfaceGrafica:
         self.janela_principal = tk.Tk()
         self.janela_principal.title('Gerenciador de Objetos')
 
+        largura = 500
+        altura = 300
+
+        posicao_x = int(self.janela_principal.winfo_screenwidth() / 2 - largura / 2)
+        posicao_y = int(self.janela_principal.winfo_screenheight() / 2 - altura / 2)
+
+        self.janela_principal.geometry(f"{largura}x{altura}+{posicao_x}+{posicao_y}")
+
         self.criar_widgets()
 
     def criar_widgets(self):
         botao_adicionar_objeto = tk.Button(self.janela_principal, text='Adicionar Objeto', command=self.adicionar_objeto_interface)
-        botao_adicionar_objeto.pack()
+        botao_adicionar_objeto.pack(side=tk.TOP, padx=10, pady=10)
 
         botao_listar_objetos = tk.Button(self.janela_principal, text='Listar Objetos em um Cômodo', command=self.listar_objetos_em_comodo_interface)
-        botao_listar_objetos.pack()
+        botao_listar_objetos.pack(side=tk.TOP, padx=10, pady=10)
+
+        # botao_procurar_objeto = tk.Button(self.janela_principal, text='Procurar Objeto', command=self.procurar_objeto_interface)
 
     def adicionar_objeto_interface(self):
         janela_adicionar_objeto = tk.Toplevel(self.janela_principal)
@@ -164,8 +174,52 @@ class InterfaceGrafica:
             texto_vazio = tk.Label(janela_vazia, text="Nenhum objeto encontrado neste cômodo.")
             texto_vazio.pack()
 
+class InterfaceInicial:
+    def __init__(self):
+        self.janela_inicial = tk.Tk()
+        self.janela_inicial.title('Bem-vindo')
+
+        largura = 300
+        altura = 100
+
+        posicao_x = int(self.janela_inicial.winfo_screenwidth() / 2 - largura / 2)
+        posicao_y = int(self.janela_inicial.winfo_screenheight() / 2 - altura / 2)
+
+        self.janela_inicial.geometry(f"{largura}x{altura}+{posicao_x}+{posicao_y}")
+
+        self.label_nome_casa = tk.Label(self.janela_inicial, text='Qual o nome da casa que pretende utilizar?')
+        self.label_nome_casa.pack()
+
+        self.entry_nome_casa = tk.Entry(self.janela_inicial)
+        self.entry_nome_casa.pack()
+
+        self.botao_confirmar = tk.Button(self.janela_inicial, text='Confirmar', command=self.verificar_arquivo)
+        self.botao_confirmar.pack()
+
+    def verificar_arquivo(self):
+        nome_casa = self.entry_nome_casa.get()
+
+        # Verifica se o arquivo da casa existe
+        nome_arquivo = f"{nome_casa}.json"
+        try:
+            with open(nome_arquivo, 'r'):
+                pass  # Arquivo existe
+        except FileNotFoundError:
+            # Arquivo não existe, cria o arquivo com um dicionário vazio
+            with open(nome_arquivo, 'w') as arquivo:
+                json.dump({}, arquivo)
+
+        self.janela_inicial.destroy()
+
+        casa = Casa(nome_arquivo)
+        interface = InterfaceGrafica(casa)
+        interface.janela_principal.mainloop()
+
+
 if __name__ == "__main__":
-    nome_arquivo = "dados_casa.json"
-    casa = Casa(nome_arquivo)
-    interface = InterfaceGrafica(casa)
-    interface.janela_principal.mainloop()
+    interface_inicial = InterfaceInicial()
+    interface_inicial.janela_inicial.mainloop()
+    # nome_arquivo = "dados_casa.json"
+    # casa = Casa(nome_arquivo)
+    # interface = InterfaceGrafica(casa)
+    # interface.janela_principal.mainloop()
