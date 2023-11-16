@@ -109,7 +109,45 @@ class InterfaceGrafica:
         botao_listar_objetos = tk.Button(self.janela_principal, text='Listar Objetos em um Cômodo', command=self.listar_objetos_em_comodo_interface)
         botao_listar_objetos.pack(side=tk.TOP, padx=10, pady=10)
 
-        # botao_procurar_objeto = tk.Button(self.janela_principal, text='Procurar Objeto', command=self.procurar_objeto_interface)
+        botao_procurar_objeto = tk.Button(self.janela_principal, text='Procurar Objeto', command=self.procurar_objeto_interface)
+        botao_procurar_objeto.pack(side=tk.TOP, padx=10, pady=10)
+
+        botao_remover_objeto = tk.Button(self.janela_principal, text='Remover Objeto', command=self.remover_objeto_interface)
+        botao_remover_objeto.pack(side=tk.TOP, padx=10, pady=10)
+
+    def procurar_objeto_interface(self):
+        janela_procurar_objeto = tk.Toplevel(self.janela_principal)
+        janela_procurar_objeto.title('Procurar Objeto')
+
+        label_objeto = tk.Label(janela_procurar_objeto, text='Objeto:')
+        label_objeto.pack()
+
+        entry_objeto = tk.Entry(janela_procurar_objeto)
+        entry_objeto.pack()
+
+        botao_procurar = tk.Button(janela_procurar_objeto, text='Procurar', command=lambda: self.procurar_objeto(entry_objeto.get()))
+        botao_procurar.pack()
+
+    def procurar_objeto(self, objeto):
+        comodos = self.casa.procurar_objeto(objeto)
+
+        if comodos:
+            janela_resultado = tk.Toplevel(self.janela_principal)
+            janela_resultado.title(f"Localizar {objeto}")
+
+            largura_minima = 400  # largura mínima
+            largura_maxima = 1000  # largura máxima
+            janela_resultado.minsize(width=largura_minima, height=200)  # altura mínima
+            janela_resultado.maxsize(width=largura_maxima, height=600)  # altura máxima
+
+            texto_comodos = tk.Label(janela_resultado, text=comodos, wraplength=largura_maxima)
+            texto_comodos.pack()
+        else:
+            janela_vazia = tk.Toplevel(self.janela_principal)
+            janela_vazia.title("Nenhum objeto encontrado")
+
+            texto_vazio = tk.Label(janela_vazia, text="Esse objeto não foi encontrado em nenhum cômodo.", wraplength=600)
+            texto_vazio.pack()
 
     def adicionar_objeto_interface(self):
         janela_adicionar_objeto = tk.Toplevel(self.janela_principal)
@@ -139,11 +177,48 @@ class InterfaceGrafica:
         entry_quantidade = tk.Entry(janela_adicionar_objeto)
         entry_quantidade.pack()
 
-        botao_confirmar = tk.Button(janela_adicionar_objeto, text='Confirmar', command=lambda: self.adicionar_objeto(entry_comodo.get(), entry_objeto.get(), entry_tipo.get(), entry_quantidade.get()))
+        botao_confirmar = tk.Button(janela_adicionar_objeto, text='Confirmar', command=lambda: self.adicionar_objeto(janela_adicionar_objeto, entry_comodo.get(), entry_objeto.get(), entry_tipo.get(), entry_quantidade.get()))
         botao_confirmar.pack()
 
-    def adicionar_objeto(self, comodo, objeto, tipo, quantidade):
+
+    def adicionar_objeto(self, janela, comodo, objeto, tipo, quantidade):
         self.casa.adicionar_objeto(comodo, objeto, tipo, quantidade)
+        janela.destroy()
+
+    def remover_objeto_interface(self):
+        janela_remover_objeto = tk.Toplevel(self.janela_principal)
+        janela_remover_objeto.title('Remover Objeto')
+
+        label_comodo = tk.Label(janela_remover_objeto, text='Comodo:')
+        label_comodo.pack()
+
+        entry_comodo = tk.Entry(janela_remover_objeto)
+        entry_comodo.pack()
+
+        label_objeto = tk.Label(janela_remover_objeto, text='Objeto:')
+        label_objeto.pack()
+
+        entry_objeto = tk.Entry(janela_remover_objeto)
+        entry_objeto.pack()
+
+        botao_remover = tk.Button(janela_remover_objeto, text='Remover', command=lambda: self.remover_objeto(entry_objeto.get(), entry_comodo.get()))
+        botao_remover.pack()
+
+    def remover_objeto(self, comodo, objeto):
+        resultado = self.casa.remover_objeto(comodo, objeto)
+
+        if resultado:
+            janela_resultado = tk.Toplevel(self.janela_principal)
+            janela_resultado.title("Resultado da Remoção")
+
+            texto_resultado = tk.Label(janela_resultado, text=resultado)
+            texto_resultado.pack()
+        else:
+            janela_vazia = tk.Toplevel(self.janela_principal)
+            janela_vazia.title("Objeto não encontrado")
+
+            texto_vazio = tk.Label(janela_vazia, text="O objeto não foi encontrado no cômodo ou o cômodo não existe.")
+            texto_vazio.pack()
 
     def listar_objetos_em_comodo_interface(self):
         janela_listar_objetos = tk.Toplevel(self.janela_principal)
